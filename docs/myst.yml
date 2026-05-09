@@ -7,12 +7,12 @@ site:
   template: book-theme
   nav:
     - title: Introduction
-      file: index.md
+      url: /
     - title: Architecture
-      file: architecture.md
+      url: /architecture
     - title: Usage
-      file: usage.md
+      url: /usage
     - title: Contributing
-      file: contributing.md
+      url: /contributing
     - title: Roadmap
-      file: roadmap.md
+      url: /roadmap
