@@ -18,5 +18,8 @@ pub struct Report {
     pub file_stats: Vec<FileStats>,
     pub timeline: Option<Vec<TimelinePeriod>>,
     pub blame: Option<Vec<BlameStats>>,
+    pub health: Option<gitinspector_core::analysis::RepoHealth>,
     pub metrics_enabled: bool,
+    pub version: String,
+    pub duration: String,
 }

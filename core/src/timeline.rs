@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, Datelike};
+use chrono::Datelike;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use crate::analysis::Commit;
@@ -18,8 +18,11 @@ pub fn generate_timeline(commits: &[Commit], use_weeks: bool) -> Vec<TimelinePer
     let mut periods: BTreeMap<String, TimelinePeriod> = BTreeMap::new();
 
     for commit in commits {
-        // Assume date is "YYYY-MM-DD"
-        if let Ok(date) = NaiveDate::parse_from_str(&commit.date, "%Y-%m-%d") {
+        if let Ok(ts) = commit.date.parse::<i64>() {
+            use chrono::{TimeZone, Utc};
+            let dt = Utc.timestamp_opt(ts, 0).unwrap();
+            let date = dt.date_naive();
+            
             let period_key = if use_weeks {
                 format!("{:04}-W{:02}", date.year(), date.iso_week().week())
             } else {
@@ -49,9 +52,9 @@ mod tests {
     #[test]
     fn test_generate_timeline_months() {
         let commits = vec![
-            Commit { hash: "1".into(), author_name: "".into(), author_email: "".into(), date: "2023-01-15".into(), subject: "".into(), insertions: 10, deletions: 5 },
-            Commit { hash: "2".into(), author_name: "".into(), author_email: "".into(), date: "2023-01-20".into(), subject: "".into(), insertions: 2, deletions: 1 },
-            Commit { hash: "3".into(), author_name: "".into(), author_email: "".into(), date: "2023-02-05".into(), subject: "".into(), insertions: 5, deletions: 0 },
+            Commit { hash: "1".into(), author_name: "".into(), author_email: "".into(), date: "1673740800".into(), subject: "".into(), insertions: 10, deletions: 5, changes: vec![] }, // Jan 15 2023
+            Commit { hash: "2".into(), author_name: "".into(), author_email: "".into(), date: "1674172800".into(), subject: "".into(), insertions: 2, deletions: 1, changes: vec![] }, // Jan 20 2023
+            Commit { hash: "3".into(), author_name: "".into(), author_email: "".into(), date: "1675555200".into(), subject: "".into(), insertions: 5, deletions: 0, changes: vec![] }, // Feb 05 2023
         ];
 
         let timeline = generate_timeline(&commits, false); // use_weeks = false

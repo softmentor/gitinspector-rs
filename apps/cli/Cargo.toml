@@ -1,6 +1,6 @@
 [package]
 name = "gitinspector-rs"
-version = "0.1.0"
+version = "1.1.0"
 edition = "2021"
 
 [dependencies]
@@ -12,3 +12,5 @@ serde = { version = "1.0", features = ["derive"] }
 quick-xml = { version = "0.31", features = ["serialize"] }
 askama = "0.16.0"
 chrono = "0.4"
+indicatif = "0.17"
+console = "0.15"

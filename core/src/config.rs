@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub const DEFAULT_EXTENSIONS: &[&str] = &["java", "c", "cc", "cpp", "h", "hh", "hpp", "py", "glsl", "rb", "js", "sql"];
+pub const DEFAULT_EXTENSIONS: &[&str] = &["java", "c", "cc", "cpp", "h", "hh", "hpp", "py", "glsl", "rb", "js", "sql", "rs", "ts", "tsx", "jsx", "go", "swift", "kt", "md"];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {

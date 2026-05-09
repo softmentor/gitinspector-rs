@@ -6,9 +6,16 @@ pub trait GitProvider {
     async fn get_commits(&self, config: &Config) -> Result<String, String>;
     async fn get_tracked_files(&self, config: &Config) -> Result<Vec<String>, String>;
     async fn get_blame_file(&self, config: &Config, file_path: &str) -> Result<String, String>;
+    async fn get_branches(&self, config: &Config) -> Result<Vec<String>, String>;
 }
 
 pub struct CliGitProvider;
+
+impl CliGitProvider {
+    pub fn new() -> Self {
+        Self
+    }
+}
 
 #[async_trait::async_trait]
 impl GitProvider for CliGitProvider {
@@ -19,7 +26,7 @@ impl GitProvider for CliGitProvider {
         cmd.arg("--numstat");
         cmd.arg("--pretty=format:commit|%h|%an|%ae|%ad|%s");
         cmd.arg("--no-merges");
-        cmd.arg("--date=short");
+        cmd.arg("--date=unix");
 
         if let Some(since) = &config.since {
             cmd.arg(format!("--since={}", since));
@@ -73,5 +80,25 @@ impl GitProvider for CliGitProvider {
         }
 
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
+    }
+
+    async fn get_branches(&self, config: &Config) -> Result<Vec<String>, String> {
+        let mut cmd = Command::new("git");
+        cmd.current_dir(&config.repo_path);
+        cmd.arg("branch");
+        cmd.arg("-a");
+        cmd.arg("--no-color");
+
+        let output = cmd.output().await.map_err(|e| e.to_string())?;
+        if !output.status.success() {
+            return Err(String::from_utf8_lossy(&output.stderr).to_string());
+        }
+
+        let branches = String::from_utf8_lossy(&output.stdout)
+            .lines()
+            .map(|s| s.trim().trim_start_matches('*').trim().to_string())
+            .filter(|s| !s.is_empty())
+            .collect();
+        Ok(branches)
     }
 }

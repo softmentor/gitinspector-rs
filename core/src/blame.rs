@@ -14,6 +14,15 @@ pub struct FileBlame {
     pub lines: u32,
 }
 
+impl FileBlame {
+    pub fn filename(&self) -> String {
+        std::path::Path::new(&self.path)
+            .file_name()
+            .map(|n| n.to_string_lossy().to_string())
+            .unwrap_or_else(|| self.path.clone())
+    }
+}
+
 /// Aggregated blame statistics per author.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct BlameStats {
@@ -24,8 +33,8 @@ pub struct BlameStats {
 }
 
 /// Computes the blame lines per author by executing `git blame` concurrently.
-pub async fn compute_blame<P: GitProvider + Send + Sync + 'static>(
-    provider: Arc<P>,
+pub async fn compute_blame(
+    provider: Arc<dyn GitProvider + Send + Sync>,
     config: Arc<Config>,
     filter: Arc<Filter>,
     files: Vec<String>,
