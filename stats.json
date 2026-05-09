@@ -1,0 +1,796 @@
+{
+  "repo_name": "gitinspector",
+  "branch_name": "master",
+  "remote_url": "https://github.com/softmentor/gitinspector",
+  "authors": [
+    {
+      "name": "Adam Waldenberg",
+      "email": "adam.waldenberg@ejwa.se",
+      "commits": 252,
+      "insertions": 5176,
+      "deletions": 2390
+    },
+    {
+      "name": "Diomidis Spinellis",
+      "email": "dds@aueb.gr",
+      "commits": 2,
+      "insertions": 3,
+      "deletions": 3
+    },
+    {
+      "name": "Christian Kastner",
+      "email": "debian@kvr.at",
+      "commits": 2,
+      "insertions": 9,
+      "deletions": 5
+    },
+    {
+      "name": "Chris Ring",
+      "email": "chris@ringthis.com",
+      "commits": 2,
+      "insertions": 14,
+      "deletions": 7
+    },
+    {
+      "name": "Chris Barry",
+      "email": "chris@barry.im",
+      "commits": 1,
+      "insertions": 3,
+      "deletions": 3
+    },
+    {
+      "name": "Dmitry Dzhus",
+      "email": "dima@dzhus.org",
+      "commits": 1,
+      "insertions": 3,
+      "deletions": 3
+    },
+    {
+      "name": "Yannick Moy",
+      "email": "moy@adacore.com",
+      "commits": 1,
+      "insertions": 4,
+      "deletions": 3
+    },
+    {
+      "name": "Jon Warghed",
+      "email": "jon.warghed@gmail.com",
+      "commits": 1,
+      "insertions": 1,
+      "deletions": 0
+    }
+  ],
+  "file_stats": [
+    {
+      "path": "blame.py",
+      "commits": 39,
+      "insertions": 432,
+      "deletions": 196
+    },
+    {
+      "path": "changes.py",
+      "commits": 38,
+      "insertions": 417,
+      "deletions": 143
+    },
+    {
+      "path": "gitinspector/gitinspector.py",
+      "commits": 34,
+      "insertions": 311,
+      "deletions": 259
+    },
+    {
+      "path": "gitinspector/blame.py",
+      "commits": 32,
+      "insertions": 273,
+      "deletions": 202
+    },
+    {
+      "path": "gitinspector.py",
+      "commits": 31,
+      "insertions": 257,
+      "deletions": 115
+    },
+    {
+      "path": "gitinspector/changes.py",
+      "commits": 19,
+      "insertions": 144,
+      "deletions": 94
+    },
+    {
+      "path": "help.py",
+      "commits": 18,
+      "insertions": 95,
+      "deletions": 24
+    },
+    {
+      "path": "metrics.py",
+      "commits": 18,
+      "insertions": 172,
+      "deletions": 60
+    },
+    {
+      "path": "format.py",
+      "commits": 17,
+      "insertions": 130,
+      "deletions": 49
+    },
+    {
+      "path": "gitinspector/format.py",
+      "commits": 16,
+      "insertions": 68,
+      "deletions": 31
+    },
+    {
+      "path": "gitinspector/metrics.py",
+      "commits": 15,
+      "insertions": 203,
+      "deletions": 100
+    },
+    {
+      "path": "missing.py",
+      "commits": 14,
+      "insertions": 117,
+      "deletions": 41
+    },
+    {
+      "path": "version.py",
+      "commits": 14,
+      "insertions": 59,
+      "deletions": 27
+    },
+    {
+      "path": "gitinspector/filtering.py",
+      "commits": 13,
+      "insertions": 120,
+      "deletions": 56
+    },
+    {
+      "path": "timeline.py",
+      "commits": 13,
+      "insertions": 333,
+      "deletions": 101
+    },
+    {
+      "path": "gitinspector/localization.py",
+      "commits": 13,
+      "insertions": 140,
+      "deletions": 45
+    },
+    {
+      "path": "extensions.py",
+      "commits": 12,
+      "insertions": 132,
+      "deletions": 49
+    },
+    {
+      "path": "gitinspector/config.py",
+      "commits": 12,
+      "insertions": 210,
+      "deletions": 119
+    },
+    {
+      "path": "gitinspector/timeline.py",
+      "commits": 11,
+      "insertions": 62,
+      "deletions": 44
+    },
+    {
+      "path": "gitinspector/responsibilities.py",
+      "commits": 11,
+      "insertions": 61,
+      "deletions": 42
+    },
+    {
+      "path": "gitinspector/comment.py",
+      "commits": 11,
+      "insertions": 75,
+      "deletions": 49
+    },
+    {
+      "path": "terminal.py",
+      "commits": 10,
+      "insertions": 162,
+      "deletions": 54
+    },
+    {
+      "path": "gitinspector/help.py",
+      "commits": 10,
+      "insertions": 61,
+      "deletions": 54
+    },
+    {
+      "path": "gitinspector/optval.py",
+      "commits": 9,
+      "insertions": 155,
+      "deletions": 89
+    },
+    {
+      "path": "responsibilities.py",
+      "commits": 9,
+      "insertions": 178,
+      "deletions": 68
+    },
+    {
+      "path": "filtering.py",
+      "commits": 9,
+      "insertions": 103,
+      "deletions": 25
+    },
+    {
+      "path": "setup.py",
+      "commits": 8,
+      "insertions": 57,
+      "deletions": 5
+    },
+    {
+      "path": "comment.py",
+      "commits": 8,
+      "insertions": 78,
+      "deletions": 29
+    },
+    {
+      "path": "gitinspector/extensions.py",
+      "commits": 7,
+      "insertions": 19,
+      "deletions": 15
+    },
+    {
+      "path": "gitinspector/version.py",
+      "commits": 7,
+      "insertions": 21,
+      "deletions": 14
+    },
+    {
+      "path": "gitinspector/terminal.py",
+      "commits": 6,
+      "insertions": 51,
+      "deletions": 12
+    },
+    {
+      "path": "gitinspector/missing.py",
+      "commits": 5,
+      "insertions": 15,
+      "deletions": 91
+    },
+    {
+      "path": "gitinspector/basedir.py",
+      "commits": 4,
+      "insertions": 50,
+      "deletions": 19
+    },
+    {
+      "path": "gitinspector/gravatar.py",
+      "commits": 4,
+      "insertions": 44,
+      "deletions": 6
+    },
+    {
+      "path": "outputable.py",
+      "commits": 4,
+      "insertions": 43,
+      "deletions": 4
+    },
+    {
+      "path": "basedir.py",
+      "commits": 3,
+      "insertions": 28,
+      "deletions": 1
+    },
+    {
+      "path": "gitinspector/compatibility.py",
+      "commits": 3,
+      "insertions": 34,
+      "deletions": 34
+    },
+    {
+      "path": "gitinspector/outputable.py",
+      "commits": 3,
+      "insertions": 8,
+      "deletions": 7
+    },
+    {
+      "path": "sysrun.py",
+      "commits": 3,
+      "insertions": 38,
+      "deletions": 2
+    },
+    {
+      "path": "gitinspector/clone.py",
+      "commits": 2,
+      "insertions": 49,
+      "deletions": 2
+    },
+    {
+      "path": "interval.py",
+      "commits": 2,
+      "insertions": 49,
+      "deletions": 0
+    },
+    {
+      "path": "gitinspector/interval.py",
+      "commits": 2,
+      "insertions": 2,
+      "deletions": 1
+    },
+    {
+      "path": "system.py",
+      "commits": 1,
+      "insertions": 0,
+      "deletions": 36
+    },
+    {
+      "path": "gitinspector/__init__.py",
+      "commits": 1,
+      "insertions": 20,
+      "deletions": 0
+    },
+    {
+      "path": "tests/__init__.py",
+      "commits": 1,
+      "insertions": 20,
+      "deletions": 0
+    },
+    {
+      "path": "tests/test_comment.py",
+      "commits": 1,
+      "insertions": 50,
+      "deletions": 0
+    },
+    {
+      "path": "tests/commented_file.cpp",
+      "commits": 1,
+      "insertions": 67,
+      "deletions": 0
+    }
+  ],
+  "timeline": [
+    {
+      "period_name": "2012-W18",
+      "commits": 5,
+      "insertions": 810,
+      "deletions": 113
+    },
+    {
+      "period_name": "2012-W19",
+      "commits": 3,
+      "insertions": 142,
+      "deletions": 16
+    },
+    {
+      "period_name": "2012-W20",
+      "commits": 13,
+      "insertions": 280,
+      "deletions": 175
+    },
+    {
+      "period_name": "2012-W21",
+      "commits": 12,
+      "insertions": 266,
+      "deletions": 110
+    },
+    {
+      "period_name": "2012-W22",
+      "commits": 3,
+      "insertions": 25,
+      "deletions": 16
+    },
+    {
+      "period_name": "2012-W41",
+      "commits": 3,
+      "insertions": 93,
+      "deletions": 46
+    },
+    {
+      "period_name": "2012-W42",
+      "commits": 12,
+      "insertions": 192,
+      "deletions": 38
+    },
+    {
+      "period_name": "2012-W43",
+      "commits": 1,
+      "insertions": 26,
+      "deletions": 4
+    },
+    {
+      "period_name": "2012-W44",
+      "commits": 5,
+      "insertions": 85,
+      "deletions": 22
+    },
+    {
+      "period_name": "2012-W46",
+      "commits": 6,
+      "insertions": 109,
+      "deletions": 25
+    },
+    {
+      "period_name": "2013-W11",
+      "commits": 7,
+      "insertions": 394,
+      "deletions": 286
+    },
+    {
+      "period_name": "2013-W13",
+      "commits": 3,
+      "insertions": 20,
+      "deletions": 3
+    },
+    {
+      "period_name": "2013-W14",
+      "commits": 3,
+      "insertions": 19,
+      "deletions": 19
+    },
+    {
+      "period_name": "2013-W15",
+      "commits": 5,
+      "insertions": 78,
+      "deletions": 5
+    },
+    {
+      "period_name": "2013-W16",
+      "commits": 5,
+      "insertions": 27,
+      "deletions": 7
+    },
+    {
+      "period_name": "2013-W18",
+      "commits": 1,
+      "insertions": 74,
+      "deletions": 7
+    },
+    {
+      "period_name": "2013-W19",
+      "commits": 13,
+      "insertions": 81,
+      "deletions": 53
+    },
+    {
+      "period_name": "2013-W20",
+      "commits": 5,
+      "insertions": 24,
+      "deletions": 19
+    },
+    {
+      "period_name": "2013-W21",
+      "commits": 5,
+      "insertions": 43,
+      "deletions": 33
+    },
+    {
+      "period_name": "2013-W22",
+      "commits": 1,
+      "insertions": 2,
+      "deletions": 2
+    },
+    {
+      "period_name": "2013-W23",
+      "commits": 6,
+      "insertions": 29,
+      "deletions": 21
+    },
+    {
+      "period_name": "2013-W24",
+      "commits": 8,
+      "insertions": 82,
+      "deletions": 6
+    },
+    {
+      "period_name": "2013-W25",
+      "commits": 3,
+      "insertions": 9,
+      "deletions": 7
+    },
+    {
+      "period_name": "2013-W26",
+      "commits": 14,
+      "insertions": 280,
+      "deletions": 103
+    },
+    {
+      "period_name": "2013-W27",
+      "commits": 15,
+      "insertions": 259,
+      "deletions": 86
+    },
+    {
+      "period_name": "2013-W28",
+      "commits": 21,
+      "insertions": 686,
+      "deletions": 525
+    },
+    {
+      "period_name": "2013-W29",
+      "commits": 4,
+      "insertions": 117,
+      "deletions": 42
+    },
+    {
+      "period_name": "2013-W30",
+      "commits": 15,
+      "insertions": 131,
+      "deletions": 101
+    },
+    {
+      "period_name": "2013-W31",
+      "commits": 6,
+      "insertions": 160,
+      "deletions": 188
+    },
+    {
+      "period_name": "2013-W32",
+      "commits": 1,
+      "insertions": 0,
+      "deletions": 2
+    },
+    {
+      "period_name": "2013-W33",
+      "commits": 2,
+      "insertions": 12,
+      "deletions": 4
+    },
+    {
+      "period_name": "2013-W38",
+      "commits": 2,
+      "insertions": 6,
+      "deletions": 5
+    },
+    {
+      "period_name": "2013-W43",
+      "commits": 1,
+      "insertions": 4,
+      "deletions": 4
+    },
+    {
+      "period_name": "2013-W44",
+      "commits": 2,
+      "insertions": 7,
+      "deletions": 6
+    },
+    {
+      "period_name": "2013-W49",
+      "commits": 2,
+      "insertions": 11,
+      "deletions": 11
+    },
+    {
+      "period_name": "2014-W02",
+      "commits": 3,
+      "insertions": 25,
+      "deletions": 16
+    },
+    {
+      "period_name": "2014-W03",
+      "commits": 4,
+      "insertions": 5,
+      "deletions": 5
+    },
+    {
+      "period_name": "2014-W04",
+      "commits": 4,
+      "insertions": 74,
+      "deletions": 9
+    },
+    {
+      "period_name": "2014-W05",
+      "commits": 1,
+      "insertions": 31,
+      "deletions": 5
+    },
+    {
+      "period_name": "2014-W07",
+      "commits": 2,
+      "insertions": 26,
+      "deletions": 21
+    },
+    {
+      "period_name": "2014-W08",
+      "commits": 7,
+      "insertions": 172,
+      "deletions": 66
+    },
+    {
+      "period_name": "2014-W09",
+      "commits": 5,
+      "insertions": 87,
+      "deletions": 45
+    },
+    {
+      "period_name": "2014-W12",
+      "commits": 1,
+      "insertions": 5,
+      "deletions": 4
+    },
+    {
+      "period_name": "2014-W41",
+      "commits": 1,
+      "insertions": 3,
+      "deletions": 3
+    },
+    {
+      "period_name": "2014-W43",
+      "commits": 1,
+      "insertions": 1,
+      "deletions": 1
+    },
+    {
+      "period_name": "2014-W44",
+      "commits": 1,
+      "insertions": 4,
+      "deletions": 3
+    },
+    {
+      "period_name": "2014-W45",
+      "commits": 4,
+      "insertions": 13,
+      "deletions": 7
+    },
+    {
+      "period_name": "2014-W47",
+      "commits": 3,
+      "insertions": 6,
+      "deletions": 4
+    },
+    {
+      "period_name": "2014-W48",
+      "commits": 6,
+      "insertions": 123,
+      "deletions": 97
+    },
+    {
+      "period_name": "2014-W49",
+      "commits": 1,
+      "insertions": 3,
+      "deletions": 3
+    },
+    {
+      "period_name": "2014-W51",
+      "commits": 3,
+      "insertions": 45,
+      "deletions": 13
+    },
+    {
+      "period_name": "2015-W08",
+      "commits": 2,
+      "insertions": 7,
+      "deletions": 2
+    }
+  ],
+  "blame": [
+    {
+      "author_name": "Adam Waldenberg",
+      "author_email": "adam.waldenberg@ejwa.se",
+      "lines": 1915,
+      "top_files": [
+        {
+          "path": "gitinspector/changes.py",
+          "lines": 323
+        },
+        {
+          "path": "gitinspector/blame.py",
+          "lines": 307
+        },
+        {
+          "path": "gitinspector/timeline.py",
+          "lines": 250
+        },
+        {
+          "path": "gitinspector/metrics.py",
+          "lines": 215
+        },
+        {
+          "path": "gitinspector/gitinspector.py",
+          "lines": 192
+        },
+        {
+          "path": "gitinspector/terminal.py",
+          "lines": 147
+        },
+        {
+          "path": "gitinspector/filtering.py",
+          "lines": 142
+        },
+        {
+          "path": "gitinspector/responsibilities.py",
+          "lines": 129
+        },
+        {
+          "path": "gitinspector/format.py",
+          "lines": 115
+        },
+        {
+          "path": "gitinspector/localization.py",
+          "lines": 95
+        }
+      ]
+    },
+    {
+      "author_name": "Christian Kastner",
+      "author_email": "debian@kvr.at",
+      "lines": 6,
+      "top_files": [
+        {
+          "path": "gitinspector/basedir.py",
+          "lines": 5
+        },
+        {
+          "path": "gitinspector/format.py",
+          "lines": 1
+        }
+      ]
+    },
+    {
+      "author_name": "Yannick Moy",
+      "author_email": "moy@adacore.com",
+      "lines": 3,
+      "top_files": [
+        {
+          "path": "gitinspector/comment.py",
+          "lines": 3
+        }
+      ]
+    },
+    {
+      "author_name": "Dmitry Dzhus",
+      "author_email": "dima@dzhus.org",
+      "lines": 3,
+      "top_files": [
+        {
+          "path": "gitinspector/comment.py",
+          "lines": 3
+        }
+      ]
+    },
+    {
+      "author_name": "Chris Barry",
+      "author_email": "chris@barry.im",
+      "lines": 3,
+      "top_files": [
+        {
+          "path": "gitinspector/format.py",
+          "lines": 2
+        },
+        {
+          "path": "gitinspector/gravatar.py",
+          "lines": 1
+        }
+      ]
+    },
+    {
+      "author_name": "Diomidis Spinellis",
+      "author_email": "dds@aueb.gr",
+      "lines": 1,
+      "top_files": [
+        {
+          "path": "gitinspector/gitinspector.py",
+          "lines": 1
+        }
+      ]
+    },
+    {
+      "author_name": "Jon Warghed",
+      "author_email": "jon.warghed@gmail.com",
+      "lines": 1,
+      "top_files": [
+        {
+          "path": "gitinspector/changes.py",
+          "lines": 1
+        }
+      ]
+    },
+    {
+      "author_name": "Chris Ring",
+      "author_email": "chris@ringthis.com",
+      "lines": 1,
+      "top_files": [
+        {
+          "path": "gitinspector/gitinspector.py",
+          "lines": 1
+        }
+      ]
+    }
+  ],
+  "metrics_enabled": true
+}
