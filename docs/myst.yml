@@ -5,6 +5,7 @@ project:
   description: A statistical analysis tool for git repositories written in Rust.
 site:
   template: book-theme
+  base_url: /gitinspector-rs
   nav:
     - title: Introduction
       url: /index
