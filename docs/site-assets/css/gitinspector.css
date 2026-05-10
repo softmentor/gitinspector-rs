@@ -1,6 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 /* gitinspector.css */
+
+/* =====================================================
+   Mermaid Dual-Render Toggling
+===================================================== */
+/* Default (Light Mode) */
+.mermaid-light {
+    display: block !important;
+}
+
+.mermaid-dark {
+    display: none !important;
+}
+
+/* Dark Mode Override (Supporting both html.dark and data-theme="dark") */
+html.dark .mermaid-light,
+html[data-theme="dark"] .mermaid-light {
+    display: none !important;
+}
+
+html.dark .mermaid-dark,
+html[data-theme="dark"] .mermaid-dark {
+    display: block !important;
+}
 
 /* Hero Section (MyST landing-split-img) */
 .myst-landing-split-img {
@@ -64,7 +87,7 @@
 
 /* Mermaid CSS Variables */
 :root {
-    --mermaid-font-family: 'Architects Daughter', cursive;
+    --mermaid-font-family: 'Inter', system-ui, sans-serif;
     --mermaid-font-size: 14px;
 
     /* Light Mode Colors */
