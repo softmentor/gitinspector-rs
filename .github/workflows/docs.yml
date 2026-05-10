@@ -28,9 +28,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Clone Katlas Plugin
-        run: git clone https://github.com/katlas-space/katlas-myst-plugin katlas/katlas-myst-plugin
-
       - name: Install uv
         uses: astral-sh/setup-uv@v3
         with:
@@ -39,9 +36,9 @@ jobs:
       - name: Set up Python
         run: uv python install 3.11
 
-      - name: Install Plugin (Python)
+      - name: Install Plugin Dependencies
         run: |
-          uv pip install --system ./katlas/katlas-myst-plugin/python/katlas-myst-plugin
+          uv pip install --system pyyaml jsonschema
 
       - name: Install mystmd
         run: uv tool install mystmd

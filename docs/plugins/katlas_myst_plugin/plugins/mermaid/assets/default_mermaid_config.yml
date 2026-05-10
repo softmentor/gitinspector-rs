@@ -1,0 +1,33 @@
+# https://mermaid.js.org/config/schema-docs/config.html
+# https://mermaid.js.org/schemas/config.schema.json
+
+# look: classic | handdrawn
+# look: handDrawn
+# layout: elk | dagre
+layout: elk
+fontFamily: "var(--mermaid-font-family)"
+elk:
+  mergeEdges: true
+  # BRANDES_KOEPF | HIERARCHICAL | LINEAR_SEGMENTS | NETWORK_SIMPLEX
+  nodePlacementStrategy: NETWORK_SIMPLEX
+# theme: default | forest | dark | neutral | seafoam | simple
+# Using base for CSS customization
+theme: default
+themeVariables:
+  fontFamily: "var(--mermaid-font-family)"
+  fontSize: "var(--mermaid-font-size)"
+  # Colors moved to CSS to prevent "Unsupported color format" crash in Mermaid base theme
+
+# logLevel: debug | info | warn | error | fatal (default: fatal)
+logLevel: fatal
+
+# darkMode: true | false (default: false)
+# We handle dark mode via CSS variables now
+darkMode: false
+# markdownAutoWrap: true | false (default: true)
+markdownAutoWrap: true
+
+# Custom Plugin Options
+# Plugin would remove this key and validate the rest against mermaid config schema
+katlas:
+  dualRender: true  # Set to false for single SVG generation

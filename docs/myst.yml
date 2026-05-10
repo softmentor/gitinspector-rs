@@ -5,7 +5,7 @@ project:
   description: A statistical analysis tool for git repositories written in Rust.
   plugins:
     - type: executable
-      path: ./ktl-myst-plugin.py
+      path: ./plugins/ktl-myst-plugin.py
   toc:
     - file: index.md
     - file: assets/diagrams.md
