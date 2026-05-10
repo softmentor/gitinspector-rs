@@ -42,7 +42,7 @@ jobs:
       - name: Build with MyST
         run: |
           cd docs
-          myst build --html
+          BASE_URL="/gitinspector-rs" myst build --html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
