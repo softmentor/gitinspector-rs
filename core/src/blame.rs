@@ -2,7 +2,6 @@ use crate::config::Config;
 use crate::provider::GitProvider;
 use std::collections::HashMap;
 use std::sync::Arc;
-use tokio::task;
 use crate::filtering::{Filter, FilterType};
 
 use serde::{Deserialize, Serialize};
@@ -39,34 +38,33 @@ pub async fn compute_blame(
     filter: Arc<Filter>,
     files: Vec<String>,
 ) -> Result<Vec<BlameStats>, String> {
-    let mut tasks = Vec::new();
-
-    for file in files {
-        let provider = provider.clone();
-        let config = config.clone();
-        let filter = filter.clone();
-        
+    use futures::StreamExt;
+    let mut stream = futures::stream::iter(files.into_iter().filter_map(|file| {
         let extension = file.rsplit('.').next().unwrap_or("");
         let is_valid_extension = config.extensions.is_empty() || config.extensions.iter().any(|ext| ext == extension);
         
         if is_valid_extension && !filter.should_exclude(&file) {
+            let provider = provider.clone();
+            let config = config.clone();
+            let filter = filter.clone();
             let file_path = file.clone();
-            tasks.push(task::spawn(async move {
+            
+            Some(async move {
                 match provider.get_blame_file(&config, &file_path).await {
                     Ok(output) => Some((file_path, parse_blame_output(&output, &filter))),
                     Err(_) => None,
                 }
-            }));
+            })
+        } else {
+            None
         }
-    }
+    })).buffer_unordered(16);
 
-    // author_email -> author_name
     let mut author_names: HashMap<String, String> = HashMap::new();
-    // author_email -> { file_path -> line_count }
     let mut author_file_map: HashMap<String, HashMap<String, u32>> = HashMap::new();
 
-    for handle in tasks {
-        if let Ok(Some((path, file_stats))) = handle.await {
+    while let Some(res) = stream.next().await {
+        if let Some((path, file_stats)) = res {
             for (email, stat) in file_stats {
                 author_names.insert(email.clone(), stat.author_name);
                 let files_map = author_file_map.entry(email).or_insert_with(HashMap::new);

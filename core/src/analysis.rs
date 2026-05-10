@@ -196,6 +196,15 @@ pub struct IncrementalAggregator {
     file_stats_map: HashMap<String, FileStats>,
     activity_map: HashMap<String, HashMap<String, WeeklyActivity>>,
     daily_map: HashMap<String, HashMap<String, u32>>,
+    global_timeline: HashMap<String, TimelinePeriod>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TimelinePeriod {
+    pub period_name: String,
+    pub commits: u32,
+    pub insertions: u32,
+    pub deletions: u32,
 }
 
 impl IncrementalAggregator {
@@ -205,6 +214,7 @@ impl IncrementalAggregator {
             file_stats_map: HashMap::new(),
             activity_map: HashMap::new(),
             daily_map: HashMap::new(),
+            global_timeline: HashMap::new(),
         }
     }
 
@@ -230,8 +240,9 @@ impl IncrementalAggregator {
                 // Weekly
                 let week_id = format!("{}-{}", dt.year(), dt.iso_week().week());
                 let author_activity = self.activity_map.entry(key.clone()).or_insert_with(HashMap::new);
+                let week_id_for_closure = week_id.clone();
                 let week_stat = author_activity.entry(week_id.clone()).or_insert_with(|| WeeklyActivity {
-                    week_id, ..Default::default()
+                    week_id: week_id_for_closure, ..Default::default()
                 });
 
                 week_stat.commits += 1;
@@ -263,11 +274,22 @@ impl IncrementalAggregator {
                         fstat.last_updated = commit.date.clone();
                     }
                 }
+
+                // Global Timeline (Weekly)
+                let global_period = self.global_timeline.entry(week_id.clone()).or_insert_with(|| TimelinePeriod {
+                    period_name: week_id,
+                    commits: 0,
+                    insertions: 0,
+                    deletions: 0,
+                });
+                global_period.commits += 1;
+                global_period.insertions += commit.insertions;
+                global_period.deletions += commit.deletions;
             }
         }
     }
 
-    pub fn finalize(mut self) -> (Vec<AuthorStats>, Vec<FileStats>) {
+    pub fn finalize(mut self) -> (Vec<AuthorStats>, Vec<FileStats>, Vec<TimelinePeriod>) {
         let mut authors: Vec<AuthorStats> = self.stats_map.into_values().collect();
         for stat in &mut authors {
             if let Some(author_activity) = self.activity_map.remove(&stat.email) {
@@ -298,7 +320,10 @@ impl IncrementalAggregator {
         }
         files.sort_by(|a, b| b.commits.cmp(&a.commits));
 
-        (authors, files)
+        let mut timeline: Vec<TimelinePeriod> = self.global_timeline.into_values().collect();
+        timeline.sort_by(|a, b| a.period_name.cmp(&b.period_name));
+
+        (authors, files, timeline)
     }
 }
 

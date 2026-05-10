@@ -1,7 +1,6 @@
 use askama::Template;
 use super::Report;
-use gitinspector_core::analysis::{AuthorStats, FileStats};
-use gitinspector_core::timeline::TimelinePeriod;
+use gitinspector_core::analysis::{AuthorStats, FileStats, TimelinePeriod};
 use gitinspector_core::blame::BlameStats;
 
 #[derive(Template)]

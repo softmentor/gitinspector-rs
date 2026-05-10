@@ -11,11 +11,15 @@ The current architecture follows a monolithic **Load -> Parse -> Aggregate** pat
 3.  **Aggregation State**: Statistics are computed only after the entire `Vec<Commit>` is loaded, meaning the peak memory usage is `Raw + AST + Stats`.
 
 ### Current Memory Complexity:
-- **History Depth**: $O(N)$ where $N$ is the number of commits.
-- **Repository Breadth**: $O(M)$ where $M$ is the number of unique files/authors.
-- **Total**: $O(N + M)$
-
 For large repositories, $N \gg M$, making the commit history the dominant (and unbounded) factor.
+
+## 2b. The "Grading" and "Formatter" Traps (Post-Processing)
+While commit streaming solves the history depth issue, the **Grading** and **Reporting** phases introduced new bottlenecks:
+
+1.  **Process Explosion ($O(F)$)**: The `git blame` logic spawned a separate process for every tracked file ($F$) simultaneously. For 10k+ files, this exceeds system process limits and causes kernel-level hangs.
+2.  **Quadratic Lookup ($O(M \times F)$)**: Updating file metrics used linear searches (`.find()`) inside loops over all files, leading to quadratic time complexity that pins the CPU.
+3.  **Formatter Bloat**: The HTML reporter attempted to embed the complete activity history of all authors and files into a single DOM. Browsers cannot render 10k+ interactive rows without hanging.
+
 
 ---
 
@@ -33,6 +37,12 @@ We will transition to a **Streaming Pipeline** architecture. This moves the comp
 - **Total**: $O(M)$
 
 This ensures memory usage is almost constant regardless of whether the repo has 100 commits or 1,000,000 commits.
+
+### Grading & Reporting Fixes:
+- **Semaphore-limited Concurrency**: `git blame` processes are now governed by a concurrency semaphore (e.g., 16 concurrent workers), preventing system-wide resource exhaustion.
+- **Hash-based Aggregation**: Replaced linear file lookups with `HashMap` $O(1)$ lookups during the metrics phase.
+- **Report Pruning**: The HTML/Markdown formatters now implement "Top-N" pruning, showing only the most significant contributors and hotspots while providing aggregate summaries for the long tail.
+
 
 ---
 

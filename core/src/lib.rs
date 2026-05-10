@@ -2,7 +2,6 @@ pub mod config;
 pub mod provider;
 pub mod analysis;
 pub mod filtering;
-pub mod timeline;
 pub mod blame;
 pub mod metrics;
 

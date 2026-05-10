@@ -111,22 +111,20 @@ async fn main() {
             }
 
             pb.set_message("Finalizing statistics...");
-            let (stats, mut file_stats) = aggregator.finalize();
+            let (stats, mut file_stats, timeline) = aggregator.finalize();
             
             pb.set_message("Auditing file metrics and health...");
-            let (mut health, _) = tokio::join!(
-                compute_repo_health(config.clone()),
-                populate_file_metrics(&config.repo_path, &mut file_stats)
-            );
+            let mut health = compute_repo_health(config.clone()).await;
             health.estimated_prs_count = pr_count;
-
+            populate_file_metrics(&config.repo_path, &mut file_stats).await;
+            
             let mut report = Report {
                 repo_name: get_repo_name(&config.repo_path),
                 branch_name: get_branch_name(&config.repo_path),
                 remote_url: get_remote_url(&config.repo_path),
                 authors: stats,
                 file_stats,
-                timeline: None,
+                timeline: Some(timeline),
                 blame: None,
                 health: Some(health),
                 metrics_enabled: config.include_metrics,
@@ -136,27 +134,28 @@ async fn main() {
 
             pb.finish_and_clear();
 
-            if config.responsibilities {
-                eprintln!("{} {}Computing code ownership (git blame)...", style("[3/3]").bold().dim(), TRUCK);
-                let files = provider.get_tracked_files(&config).await.unwrap_or_default();
-                
-                let blame_pb = ProgressBar::new(files.len() as u64);
-                blame_pb.set_style(ProgressStyle::default_bar()
-                    .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} files ({eta})")
-                    .unwrap()
-                    .progress_chars("#>-"));
-                
-                match gitinspector_core::blame::compute_blame(provider.clone(), config.clone(), filter.clone(), files).await {
-                    Ok(blame_stats) => {
-                        report.blame = Some(blame_stats);
-                        blame_pb.finish_with_message("Blame analysis complete");
-                    }
-                    Err(e) => {
-                        blame_pb.abandon();
-                        eprintln!("Error computing blame: {}", e);
+                if config.responsibilities {
+                    eprintln!("{} {}Computing code ownership (git blame)...", style("[3/3]").bold().dim(), TRUCK);
+                    let files = provider.get_tracked_files(&config).await.unwrap_or_default();
+                    
+                    match gitinspector_core::blame::compute_blame(provider.clone(), config.clone(), filter.clone(), files).await {
+                        Ok(blame_stats) => {
+                            report.blame = Some(blame_stats);
+                        }
+                        Err(e) => {
+                            eprintln!("Error computing blame: {}", e);
+                        }
                     }
                 }
-            }
+                
+                // Prune report for HTML/Markdown to ensure scalability
+                if args.format.to_lowercase() == "html" || args.format.to_lowercase() == "markdown" || args.format.to_lowercase() == "md" {
+                    report.authors.truncate(100);
+                    report.file_stats.truncate(200);
+                    if let Some(ref mut blame) = report.blame {
+                        blame.truncate(50);
+                    }
+                }
 
             eprintln!("{} {}Generating {} report...", style("DONE").green().bold(), SPARKLE, style(&args.format).yellow());
 
@@ -182,6 +181,9 @@ async fn main() {
 }
 
 async fn populate_file_metrics(repo_path: &str, file_stats: &mut [FileStats]) {
+    // Use a HashMap for O(1) lookup to avoid O(N^2) complexity on large repos
+    let mut stats_map: std::collections::HashMap<String, &mut FileStats> = file_stats.iter_mut().map(|s| (s.path.clone(), s)).collect();
+
     let size_output = Command::new("git").arg("-C").arg(repo_path).arg("ls-tree").arg("-r").arg("-l").arg("HEAD").output().await;
     if let Ok(output) = size_output {
         let stdout = String::from_utf8_lossy(&output.stdout);
@@ -190,7 +192,7 @@ async fn populate_file_metrics(repo_path: &str, file_stats: &mut [FileStats]) {
             if parts.len() >= 5 {
                 let size = parts[3].parse::<u32>().unwrap_or(0);
                 let path = parts[4..].join(" ");
-                if let Some(stat) = file_stats.iter_mut().find(|s| s.path == path) {
+                if let Some(stat) = stats_map.get_mut(&path) {
                     stat.total_lines = size;
                 }
             }
@@ -204,7 +206,7 @@ async fn populate_file_metrics(repo_path: &str, file_stats: &mut [FileStats]) {
             if parts.len() >= 3 {
                 let path = parts[1];
                 let count = parts[2].parse::<u32>().unwrap_or(0);
-                if let Some(stat) = file_stats.iter_mut().find(|s| s.path == path) {
+                if let Some(stat) = stats_map.get_mut(path) {
                     stat.loc = count;
                 }
             }
