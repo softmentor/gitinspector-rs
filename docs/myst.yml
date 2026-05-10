@@ -4,8 +4,8 @@ project:
   title: gitinspector-rs
   description: A statistical analysis tool for git repositories written in Rust.
   plugins:
-    - type: javascript
-      path: ../../katlas/katlas-myst-plugin/ktl-myst-plugin.mjs
+    - type: executable
+      path: ./ktl-myst-plugin.py
   toc:
     - file: index.md
     - file: assets/diagrams.md

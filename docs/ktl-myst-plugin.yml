@@ -1,3 +1,7 @@
+python:
+  environment: ktl-env
+  manage: auto
+
 diagrams:
   mermaid:
     enabled: true

@@ -25,6 +25,22 @@ A professional-grade diagnostic tool designed to provide deep insights into repo
 
 +++
 
++++ { "kind": "justified" }
+
+## The Analytics Contract
+
+> **GitInspector is not just a tool for counting commits.**
+> **It is a lens for understanding your codebase.**
+
+If you are a lead engineer or architect, you need more than just raw numbers. You need to identify where your team is struggling, which parts of the system are becoming brittle, and who is carrying the most responsibility.
+
+`gitinspector-rs` provides:
+- **Clarity**: High-fidelity visualizations of repository health.
+- **Speed**: Lightning-fast analysis powered by Rust.
+- **Portability**: Generate standalone HTML reports or JSON data for CI/CD integration.
+
++++
+
 ## 🚀 Professional Git Analytics
 
 `gitinspector-rs` is designed for teams that need to understand their codebase's evolution without the overhead of heavy enterprise tools. It leverages Rust's concurrent processing to deliver reports in seconds, even for repositories with decades of history.

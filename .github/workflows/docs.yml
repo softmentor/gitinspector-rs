@@ -34,24 +34,17 @@ jobs:
           repository: katlas-space/katlas-myst-plugin
           path: katlas/katlas-myst-plugin
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Build Plugin
-        run: |
-          cd katlas/katlas-myst-plugin/packages/katlas-myst-plugin
-          npm install
-          npm run build
-
       - name: Install uv
         uses: astral-sh/setup-uv@v3
         with:
           version: "latest"
 
       - name: Set up Python
-        run: uv python install 3.12
+        run: uv python install 3.11
+
+      - name: Install Plugin (Python)
+        run: |
+          uv pip install --system ./katlas/katlas-myst-plugin/python/katlas-myst-plugin
 
       - name: Install mystmd
         run: uv tool install mystmd
