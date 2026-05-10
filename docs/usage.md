@@ -1,34 +1,63 @@
-# Usage
+# Usage Guide
 
-`gitinspector-rs` is a high-performance CLI tool for gathering deep statistics about a git repository.
+`gitinspector-rs` is designed to be both simple for quick checks and powerful for deep repository audits.
 
-## Basic Execution
+## Installation
 
-Run the CLI targeting a repository. By default, it provides a summary of commit activity.
+Ensure you have the latest binary in your PATH. You can build it from source using:
+```bash
+cargo build --release
+```
+
+## Basic Command
+
+Run the tool against any local git repository path:
 ```bash
 gitinspector-rs /path/to/repo
 ```
 
-## CLI Feedback (v1.1)
+## Diagnostic Phases
 
-When running the tool, you will see real-time progress indicators:
-- **[1/3] Analyzing**: Parsing commit history and computing base metrics.
-- **[2/3] Auditing**: Checking repository health, identifying stale branches (>90 days), and auditing large blobs.
-- **[3/3] Blame Analysis**: Executing concurrent `git blame` with a progress bar and ETA.
+The tool executes analysis in three distinct phases:
+1.  **🔍 Analysis**: Parses commit history, computes author contributions, and generates activity trends.
+2.  **🏥 Health Audit**: Scans for repository maintenance debt, including stale branches and oversized files.
+3.  **🚚 Blame Analysis**: Performs multi-threaded `git blame` across the codebase to determine line-level ownership.
 
-## Options
+## Command Options
 
-- `-F`, `--format`: Output format. Can be `text`, `json`, `xml`, `html`, or `markdown` (default: `text`).
-- `-f`, `--file-types`: A comma separated list of file extensions to include (e.g. `rs,js,py`).
-- `-x`, `--exclude`: An exclusion pattern. Supports prefixes: `author:`, `email:`, `revision:`, `message:`, `file:`.
-- `--grading`: Enable all detailed reports (Heatmap, Timeline, Blame, Metrics).
-- `-T`, `--timeline`: Shows a grouped timeline of activity.
-- `-r`, `--responsibilities`: Runs `git blame` concurrently to track active line ownership.
-- `-m`, `--metrics`: Enables code complexity metrics.
+### Formatting & Output
+- `-F, --format <FORMAT>`: Output type (`text`, `html`, `markdown`, `json`, `xml`). Default is `text`.
+- `--grading`: A "macro" flag that enables all detailed analysis features (`-r`, `-T`, `-m`). Recommended for full audits.
 
-## Example
+### Filtering
+- `-f, --file-types <EXTS>`: Comma-separated list of extensions to include (e.g., `rs,js,py`).
+- `-x, --exclude <PATTERN>`: Exclude specific data. Patterns can be prefixed:
+    - `author:John`: Exclude commits by John.
+    - `file:tests/`: Exclude files in the tests directory.
+    - `email:bot@`: Exclude specific email domains.
+    - `message:chore`: Exclude commits with specific subject lines.
 
-Generate a full HTML dashboard for the current directory:
+### Detailed Metrics
+- `-r, --responsibilities`: Enable line-level ownership via `git blame`.
+- `-T, --timeline`: Include weekly/monthly activity visualizations.
+- `-m, --metrics`: Enable code complexity and size metrics for hotspot detection.
+
+## Professional Examples
+
+### 1. Generating a Stakeholder Dashboard
+Create a comprehensive HTML report for a project review:
 ```bash
-gitinspector-rs . --grading -F html > report.html
+gitinspector-rs . --grading -F html > stats-report.html
+```
+
+### 2. Auditing Large Codebases (Text)
+Focus only on core source files and exclude test data:
+```bash
+gitinspector-rs . -f rs,c,cpp -x "file:tests/" --responsibilities
+```
+
+### 3. CI/CD Integration (JSON)
+Extract metrics for automated tracking:
+```bash
+gitinspector-rs . -F json > repo-metrics.json
 ```

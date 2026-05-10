@@ -1,37 +1,45 @@
-# Roadmap
+# Project Roadmap
 
-This document outlines the future development plan for `gitinspector-rs`. Our goal is to maintain 100% feature parity with the original Python tool while expanding into modern platforms.
+The mission of `gitinspector-rs` is to provide the most performant and auditable repository analytics engine in the ecosystem. 
 
-## v1.1 (UX & Visuals) - COMPLETED
-- [x] **Author Activity Heatmap**: GitHub-style weekly contribution grid.
-- [x] **CLI Diagnostics**: Real-time progress bars and analysis timing.
-- [x] **Repo Health Audit**: Branch listing, PR estimation, and large blob detection.
+## v1.1.0: Foundation & Diagnostics (LATEST)
+Status: **STABLE RELEASE**
 
-## v1.2 (Advanced Metrics)
-- **Stability/Age Metrics**: Port the legacy "Stability" (code survival rate) and "Age" (average code age) metrics.
-- **Git Config Integration**: Support reading global and local `.gitconfig` settings for defaults.
-- **Gravatar Support**: Optional integration to fetch and link author avatars.
+The focus of v1.1.0 was on auditability and professional diagnostics.
+- [x] **Repository Health Audit**: Identification of stale branches and large file blobs.
+- [x] **High-Fidelity HTML Reports**: Modern, responsive dashboard with Chart.js integration.
+- [x] **Performance Metadata**: Tracking of analysis duration and engine versioning.
+- [x] **Concurrent Execution**: Asynchronous `git blame` and metric calculation.
 
-## v2.0 (The Desktop Experience)
-- **`apps/desktop`**: Initialize a Tauri-based desktop application.
-- **Dynamic Charts**: Use the existing JSON output to render interactive charts in the desktop UI.
-- **Real-time Analysis**: Background monitoring of repositories.
+## v1.2.0: Advanced Analytics
+Status: **IN DEVELOPMENT**
+
+The upcoming release aims to deepen the analytical capabilities of the engine.
+- **Code Survival (Stability)**: Metrics for tracking how long code stays in the repository before being modified.
+- **Code Age Metrics**: Average age of lines per author and file.
+- **Git Ecosystem Integration**: Support for `.gitconfig` alias resolution and Gravatar profile integration.
+- **Export Hardening**: PDF export support for executive reporting.
+
+## v2.0.0: The Desktop Experience
+Status: **PLANNED**
+
+Transformation from a CLI tool to a cross-platform analytics workstation.
+- **Tauri Native GUI**: A fluid desktop interface for multi-repository monitoring.
+- **Interactive Drill-downs**: Clickable charts to explore commit details and churn history.
+- **Custom SQL Queries**: Support for querying repository data using a SQL-like interface.
 
 ---
 
-## Feature Comparison (Current Progress)
+## Feature Parity & Innovations
 
-| Feature | Python Status | Rust Status |
+| Feature | Legacy (Python) | Rust (v1.1.0+) |
 | :--- | :--- | :--- |
-| **Output Formats** | Yes | **Completed** |
-| **Timeline** | Yes | **Completed** |
-| **Author Heatmap** | No | **Completed (v1.1)** |
-| **CLI Diagnostics** | No | **Completed (v1.1)** |
-| **Repo Health Audit** | No | **Completed (v1.1)** |
-| **Concurrent Blame** | Yes | **Completed** (Async) |
-| **Filtering (Regex)** | Yes | **Completed** |
-| **Grading Mode** | Yes | **Completed** |
+| **Output Formats** | Basic | **Advanced (HTML/MD/JSON)** |
+| **Analysis Performance** | Standard | **Ultra-Fast (Async/Rust)** |
+| **Author Heatmap** | No | **Yes** |
+| **Repo Health Audit** | No | **Yes** |
+| **Performance Metadata** | No | **Yes** |
+| **Concurrent Blame** | No | **Yes** |
+| **Filtering (Regex)** | Yes | **Yes** |
 | **Stability/Age** | Yes | Planned (v1.2) |
-| **Gravatar** | Yes | Planned (v1.2) |
-| **Git Config** | Yes | Planned (v1.2) |
 | **Desktop App** | No | Planned (v2.0) |
