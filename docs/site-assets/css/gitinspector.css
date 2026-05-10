@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
+/* gitinspector.css */
+
+/* Hero Section (MyST landing-split-img) */
+.myst-landing-split-img {
+    background-color: #1a1a1a !important;
+    color: #fff !important;
+    padding: 4rem !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 550px !important;
+    gap: 4rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.myst-landing-split-img-image {
+    position: relative !important;
+    width: auto !important;
+    height: auto !important;
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    max-width: 500px !important;
+}
+
+.myst-landing-split-img-image img {
+    width: 380px !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    margin: 0 !important;
+}
+
+.myst-landing-split-img-content-wrapper {
+    position: relative !important;
+    width: auto !important;
+    flex: 1.2 !important;
+    padding: 0 !important;
+}
+
+.myst-landing-split-img-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+}
+
+.myst-landing-split-img h2,
+.myst-landing-split-img p,
+.myst-landing-split-img .prose {
+    color: #fff !important;
+}
+
+/* Dark Theme Support */
+.dark .myst-landing-split-img {
+    background-color: #2d2d2d !important;
+}
+
+/* Mermaid CSS Variables */
+:root {
+    --mermaid-font-family: 'Architects Daughter', cursive;
+    --mermaid-font-size: 14px;
+
+    /* Light Mode Colors */
+    --mermaid-primary-color: #f0f2f6;
+    --mermaid-primary-text: #1e293b;
+    --mermaid-primary-border: #3b82f6;
+    --mermaid-line-color: #64748b;
+    --mermaid-secondary-color: #f8fafc;
+    --mermaid-tertiary-color: #fff;
+}
+
+html.dark {
+    /* Dark Mode Colors */
+    --mermaid-primary-color: #1e293b;
+    --mermaid-primary-text: #f1f5f9;
+    --mermaid-primary-border: #60a5fa;
+    --mermaid-line-color: #94a3b8;
+    --mermaid-secondary-color: #0f172a;
+    --mermaid-tertiary-color: #1e293b;
+}
+
+.mermaid text {
+    font-family: var(--mermaid-font-family) !important;
+}
+
+.mermaid g.node rect,
+.mermaid g.node circle,
+.mermaid g.node polygon {
+    fill: var(--mermaid-primary-color) !important;
+    stroke: var(--mermaid-primary-border) !important;
+    stroke-width: 1.5px;
+}
+
+.mermaid g.node .label {
+    color: var(--mermaid-primary-text) !important;
+    fill: var(--mermaid-primary-text) !important;
+}
+
+.mermaid g.edgePath path {
+    stroke: var(--mermaid-line-color) !important;
+    stroke-width: 2px;
+}
+
+.mermaid .edgeLabel {
+    background-color: var(--mermaid-tertiary-color) !important;
+    color: var(--mermaid-primary-text) !important;
+}
+
+.mermaid g.cluster rect {
+    fill: var(--mermaid-secondary-color) !important;
+    stroke: var(--mermaid-primary-border) !important;
+}

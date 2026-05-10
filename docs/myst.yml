@@ -8,14 +8,17 @@ site:
   options:
     logo: images/logo.png
     logo_text: "GitInspector Docs"
+    style: site-assets/css/gitinspector.css
   nav:
-    - title: User Guides
+    - title: USER GUIDES
+      url: /index
       children:
-        - title: Introduction
+        - title: Getting Started
           file: index.md
-        - title: Usage
+        - title: Command Reference
           file: usage.md
-    - title: Developer Guides
+    - title: DEVELOPER GUIDES
+      url: /architecture
       children:
         - title: Architecture
           file: architecture.md

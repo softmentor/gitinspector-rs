@@ -4,23 +4,11 @@
 
 ## System Design
 
-```mermaid
-graph TD
-    CLI[apps/cli] -->|Orchestrates| Core[gitinspector-core]
-    Desktop[apps/desktop] -->|Future| Core
-    
-    subgraph Core
-        Provider[Git Provider] -->|Raw Data| Parser[Commit Parser]
-        Parser -->|Commit Objects| Stats[Author & File Stats]
-        Stats -->|Aggregates| Health[Health Audit]
-        Stats -->|Aggregates| Blame[Blame Engine]
-    end
-    
-    Core -->|Report Struct| Formatters[apps/cli/formatters]
-    Formatters -->|Output| HTML[HTML Dashboard]
-    Formatters -->|Output| JSON[JSON API]
-    Formatters -->|Output| MD[Markdown]
-```
+![](#arch-block-diagram)
+
+## Analysis Lifecycle
+
+![](#analysis-sequence)
 
 ## Component Breakdown
 

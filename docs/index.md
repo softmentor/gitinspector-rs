@@ -1,16 +1,33 @@
-# GitInspector-rs
-
-**A high-performance git repository analytics engine written in Rust.**
-
-`gitinspector-rs` is a professional-grade diagnostic tool designed to provide deep insights into repository health, contributor activity, and code maintenance hotspots. By leveraging Rust's performance and safety, it delivers lightning-fast analysis even for massive codebases.
-
-![Report Preview](./images/hero_report.png)
-
-{button}`Explore the Usage Guide </usage>`
-
+---
+title: GitInspector-rs
+site:
+  hide_outline: true
+  hide_toc: true
+  hide_title_block: true
 ---
 
-## 🚀 Key Capabilities
++++ { "kind": "split-image" }
+
+Git Repository Analytics
+
+# GitInspector-rs: Deep Insights, Fast.
+
+A professional-grade diagnostic tool designed to provide deep insights into repository health, contributor activity, and code maintenance hotspots. Built with Rust for ultimate performance.
+
+```{image} ./images/logo.png
+:class: only-dark
+```
+```{image} ./images/logo.png
+:class: only-light
+```
+
+{button}`Explore Usage Guide </usage>`
+
++++
+
+## 🚀 Professional Git Analytics
+
+`gitinspector-rs` is designed for teams that need to understand their codebase's evolution without the overhead of heavy enterprise tools. It leverages Rust's concurrent processing to deliver reports in seconds, even for repositories with decades of history.
 
 ### 🏥 Repository Health Diagnostics
 Automatically audit your repository for maintenance debt.
