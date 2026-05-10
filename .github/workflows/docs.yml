@@ -28,11 +28,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Checkout Katlas Plugin
-        uses: actions/checkout@v4
-        with:
-          repository: katlas-space/katlas-myst-plugin
-          path: katlas/katlas-myst-plugin
+      - name: Clone Katlas Plugin
+        run: git clone https://github.com/katlas-space/katlas-myst-plugin katlas/katlas-myst-plugin
 
       - name: Install uv
         uses: astral-sh/setup-uv@v3
