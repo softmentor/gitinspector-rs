@@ -1,8 +1,7 @@
 python:
-  environment: ktl-env
-  manage: auto
+  manage: manual
 
 diagrams:
   mermaid:
     enabled: true
-    global_config: ./assets/mermaid-config.yml
+    global_config: ./assets/mermaid-global-config.yml

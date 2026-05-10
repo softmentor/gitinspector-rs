@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Inter:wght@400;600&display=swap');
 
 /* gitinspector.css */
 
@@ -85,28 +85,29 @@ html[data-theme="dark"] .mermaid-dark {
     background-color: #2d2d2d !important;
 }
 
-/* Mermaid CSS Variables */
+/* Mermaid CSS Variables - Restored Architects Daughter Look */
 :root {
-    --mermaid-font-family: 'Inter', system-ui, sans-serif;
+    --mermaid-font-family: 'Architects Daughter', cursive;
     --mermaid-font-size: 14px;
 
-    /* Light Mode Colors */
-    --mermaid-primary-color: #f0f2f6;
-    --mermaid-primary-text: #1e293b;
-    --mermaid-primary-border: #3b82f6;
-    --mermaid-line-color: #64748b;
-    --mermaid-secondary-color: #f8fafc;
+    /* Light Mode Colors (Katlas Style) */
+    --mermaid-primary-color: #ECECFF;
+    --mermaid-primary-text: #333;
+    --mermaid-primary-border: #9370DB;
+    --mermaid-line-color: #333;
+    --mermaid-secondary-color: #ffffde;
     --mermaid-tertiary-color: #fff;
 }
 
-html.dark {
-    /* Dark Mode Colors */
-    --mermaid-primary-color: #1e293b;
-    --mermaid-primary-text: #f1f5f9;
-    --mermaid-primary-border: #60a5fa;
-    --mermaid-line-color: #94a3b8;
-    --mermaid-secondary-color: #0f172a;
-    --mermaid-tertiary-color: #1e293b;
+html.dark,
+html[data-theme="dark"] {
+    /* Dark Mode Colors (Katlas Style) */
+    --mermaid-primary-color: #2D2D2D;
+    --mermaid-primary-text: #F0F0F0;
+    --mermaid-primary-border: #BB86FC;
+    --mermaid-line-color: #E0E0E0;
+    --mermaid-secondary-color: #383838;
+    --mermaid-tertiary-color: #121212;
 }
 
 .mermaid text {

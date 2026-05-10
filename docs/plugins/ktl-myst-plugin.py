@@ -28,11 +28,18 @@ def main():
         from katlas_myst_plugin.cli import main as cli_main
         cli_main()
     except ImportError as e:
+        with open(os.path.join(script_dir, "debug.log"), "a") as f:
+            f.write(f"ImportError: {str(e)}\n")
+            f.write(f"sys.path: {sys.path}\n")
         print(f"[ktl-myst-plugin] ERROR: The 'katlas-myst-plugin' package or its dependencies (pyyaml, jsonschema) are not found.", file=sys.stderr)
         print(f"[ktl-myst-plugin] Debug: {str(e)}", file=sys.stderr)
         print("[ktl-myst-plugin] Please ensure dependencies are installed: `pip install pyyaml jsonschema`", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
+        with open(os.path.join(script_dir, "debug.log"), "a") as f:
+            f.write(f"Exception: {str(e)}\n")
+            import traceback
+            f.write(traceback.format_exc())
         print(f"[ktl-myst-plugin] CRITICAL ERROR: {str(e)}", file=sys.stderr)
         import traceback
         traceback.print_exc(file=sys.stderr)
