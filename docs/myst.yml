@@ -7,7 +7,7 @@ site:
   template: book-theme
   nav:
     - title: Introduction
-      url: /
+      url: /index
     - title: Architecture
       url: /architecture
     - title: Usage
