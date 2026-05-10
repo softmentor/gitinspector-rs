@@ -12,8 +12,15 @@ def main():
         cli_main()
     except Exception as e:
         import traceback
+        # Log to /tmp so it's always accessible and writable
+        with open('/tmp/gitinspector_plugin.log', 'a') as f:
+            print(f"--- Error at {os.getcwd()} ---", file=f)
+            print(f"Python Executable: {sys.executable}", file=f)
+            print(f"Python Path: {sys.path}", file=f)
+            print(f"ERROR: {str(e)}", file=f)
+            traceback.print_exc(file=f)
+        # Also print to stderr for MyST
         print(f"[ktl-myst-plugin] ERROR: {str(e)}", file=sys.stderr)
-        traceback.print_exc(file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":

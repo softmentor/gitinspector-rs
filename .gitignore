@@ -25,3 +25,15 @@ _build/
 _target/
 scratch/
 report-output/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.python-version
+
+# Plugin logs
+docs/plugins/*.log
+docs/plugin_error.log
+/tmp/gitinspector_plugin.log
