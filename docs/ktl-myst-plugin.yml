@@ -1,0 +1,4 @@
+diagrams:
+  mermaid:
+    enabled: true
+    global_config: ./assets/mermaid-config.yml
