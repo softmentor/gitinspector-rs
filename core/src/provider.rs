@@ -1,9 +1,18 @@
 use tokio::process::Command;
 use crate::config::Config;
+use std::pin::Pin;
+use futures::Stream;
+use tokio_util::codec::{FramedRead, LinesCodec};
+use std::process::Stdio;
+use futures::stream::StreamExt;
+
+pub type LogStream = Pin<Box<dyn Stream<Item = Result<String, String>> + Send>>;
 
 #[async_trait::async_trait]
 pub trait GitProvider {
-    async fn get_commits(&self, config: &Config) -> Result<String, String>;
+    /// Returns a stream of lines from 'git log'.
+    async fn get_commits(&self, config: &Config) -> Result<LogStream, String>;
+    
     async fn get_tracked_files(&self, config: &Config) -> Result<Vec<String>, String>;
     async fn get_blame_file(&self, config: &Config, file_path: &str) -> Result<String, String>;
     async fn get_branches(&self, config: &Config) -> Result<Vec<String>, String>;
@@ -19,7 +28,7 @@ impl CliGitProvider {
 
 #[async_trait::async_trait]
 impl GitProvider for CliGitProvider {
-    async fn get_commits(&self, config: &Config) -> Result<String, String> {
+    async fn get_commits(&self, config: &Config) -> Result<LogStream, String> {
         let mut cmd = Command::new("git");
         cmd.current_dir(&config.repo_path);
         cmd.arg("log");
@@ -35,13 +44,20 @@ impl GitProvider for CliGitProvider {
             cmd.arg(format!("--until={}", until));
         }
 
-        let output = cmd.output().await.map_err(|e| e.to_string())?;
+        // Use Piped Stdio to avoid buffering the entire output in memory
+        cmd.stdout(Stdio::piped());
+        cmd.stderr(Stdio::piped());
 
-        if !output.status.success() {
-            return Err(String::from_utf8_lossy(&output.stderr).to_string());
-        }
+        let mut child = cmd.spawn().map_err(|e| e.to_string())?;
+        let stdout = child.stdout.take().ok_or("Failed to capture stdout")?;
+        
+        let reader = FramedRead::new(stdout, LinesCodec::new());
+        
+        let stream = reader.map(|res| {
+            res.map_err(|e| e.to_string())
+        });
 
-        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+        Ok(Box::pin(stream))
     }
 
     async fn get_tracked_files(&self, config: &Config) -> Result<Vec<String>, String> {

@@ -33,9 +33,7 @@ pub struct AuthorStats {
     pub commits: u32,
     pub insertions: u32,
     pub deletions: u32,
-    /// Activity aggregated by week.
     pub activity: Vec<WeeklyActivity>,
-    /// Activity aggregated by day for heatmap visualization.
     pub daily_activity: Vec<DayActivity>,
 }
 
@@ -47,7 +45,6 @@ pub struct DayActivity {
 }
 
 impl AuthorStats {
-    /// Computes the net impact (insertions - deletions).
     pub fn impact(&self) -> i64 {
         (self.insertions as i64) - (self.deletions as i64)
     }
@@ -88,13 +85,12 @@ pub struct FileStats {
     pub commits: u32,
     pub insertions: u32,
     pub deletions: u32,
-    pub total_lines: u32, // Reusing for file size in bytes
-    pub loc: u32,         // Actual line count
+    pub total_lines: u32, 
+    pub loc: u32,         
     pub last_updated: String,
 }
 
 impl FileStats {
-    /// Extracts the filename (basename) from the full path.
     pub fn filename(&self) -> String {
         std::path::Path::new(&self.path)
             .file_name()
@@ -103,30 +99,38 @@ impl FileStats {
     }
 }
 
-/// Parses raw `git log --numstat` output into a vector of `Commit` objects.
-/// 
-/// This function handles:
-/// - Commit metadata (hash, author, date, subject)
-/// - File-level changes (insertions, deletions)
-/// - Filtering by extension and exclusion patterns
-pub fn parse_commits(raw_output: &str, config: &Config, filter: &Filter) -> Vec<Commit> {
-    let mut commits = Vec::new();
-    let mut current_commit: Option<Commit> = None;
-    let mut commit_touches_valid_file = false;
+// --- NEW STREAMING COMPONENTS ---
 
-    for line in raw_output.lines() {
+pub struct CommitParser<'a> {
+    config: &'a Config,
+    filter: &'a Filter,
+    current_commit: Option<Commit>,
+    commit_touches_valid_file: bool,
+}
+
+impl<'a> CommitParser<'a> {
+    pub fn new(config: &'a Config, filter: &'a Filter) -> Self {
+        Self {
+            config,
+            filter,
+            current_commit: None,
+            commit_touches_valid_file: false,
+        }
+    }
+
+    /// Processes a single line of git log output.
+    /// Returns Some(Commit) if a commit was just finalized.
+    pub fn parse_line(&mut self, line: &str) -> Option<Commit> {
         let line = line.trim();
         if line.is_empty() {
-            continue;
+            return None;
         }
 
         if line.starts_with("commit|") {
-            if let Some(commit) = current_commit.take() {
-                if commit_touches_valid_file {
-                    commits.push(commit);
-                }
-            }
+            let previous = self.current_commit.take();
+            let touched = self.commit_touches_valid_file;
             
+            // Start new commit
             let parts: Vec<&str> = line.splitn(6, '|').collect();
             if parts.len() == 6 {
                 let hash = parts[1].to_string();
@@ -135,40 +139,33 @@ pub fn parse_commits(raw_output: &str, config: &Config, filter: &Filter) -> Vec<
                 let date = parts[4].to_string();
                 let subject = parts[5].to_string();
 
-                // Apply advanced filtering
-                if filter.is_excluded(&hash, FilterType::Revision) ||
-                   filter.is_excluded(&author_name, FilterType::Author) ||
-                   filter.is_excluded(&author_email, FilterType::Email) ||
-                   filter.is_excluded(&subject, FilterType::Message) {
-                    current_commit = None;
-                    commit_touches_valid_file = false;
-                    continue;
+                if self.filter.is_excluded(&hash, FilterType::Revision) ||
+                   self.filter.is_excluded(&author_name, FilterType::Author) ||
+                   self.filter.is_excluded(&author_email, FilterType::Email) ||
+                   self.filter.is_excluded(&subject, FilterType::Message) {
+                    self.current_commit = None;
+                    self.commit_touches_valid_file = false;
+                } else {
+                    self.current_commit = Some(Commit {
+                        hash, author_name, author_email, date, subject,
+                        insertions: 0, deletions: 0, changes: Vec::new(),
+                    });
+                    self.commit_touches_valid_file = false;
                 }
-
-                current_commit = Some(Commit {
-                    hash,
-                    author_name,
-                    author_email,
-                    date,
-                    subject,
-                    insertions: 0,
-                    deletions: 0,
-                    changes: Vec::new(),
-                });
-                commit_touches_valid_file = false;
             }
-        } else if let Some(ref mut commit) = current_commit {
-            // parse numstat line: e.g. "10\t2\tfile.rs"
+            
+            if touched { return previous; }
+            return None;
+        } else if let Some(ref mut commit) = self.current_commit {
             let parts: Vec<&str> = line.split_whitespace().collect();
             if parts.len() >= 3 {
                 let file_path = parts[2];
-                
-                // Extension Filtering
                 let extension = file_path.rsplit('.').next().unwrap_or("");
-                let is_valid_extension = config.extensions.is_empty() || config.extensions.iter().any(|ext| ext == extension);
+                let is_valid_extension = self.config.extensions.is_empty() || 
+                                       self.config.extensions.iter().any(|ext| ext == extension);
                 
-                if is_valid_extension && !filter.should_exclude(file_path) {
-                    commit_touches_valid_file = true;
+                if is_valid_extension && !self.filter.should_exclude(file_path) {
+                    self.commit_touches_valid_file = true;
                     let ins = parts[0].parse::<u32>().unwrap_or(0);
                     let del = parts[1].parse::<u32>().unwrap_or(0);
                     
@@ -182,68 +179,65 @@ pub fn parse_commits(raw_output: &str, config: &Config, filter: &Filter) -> Vec<
                 }
             }
         }
+        None
     }
 
-    if let Some(commit) = current_commit {
-        if commit_touches_valid_file {
-            commits.push(commit);
+    pub fn finalize(&mut self) -> Option<Commit> {
+        if self.commit_touches_valid_file {
+            self.current_commit.take()
+        } else {
+            None
+        }
+    }
+}
+
+pub struct IncrementalAggregator {
+    stats_map: HashMap<String, AuthorStats>,
+    file_stats_map: HashMap<String, FileStats>,
+    activity_map: HashMap<String, HashMap<String, WeeklyActivity>>,
+    daily_map: HashMap<String, HashMap<String, u32>>,
+}
+
+impl IncrementalAggregator {
+    pub fn new() -> Self {
+        Self {
+            stats_map: HashMap::new(),
+            file_stats_map: HashMap::new(),
+            activity_map: HashMap::new(),
+            daily_map: HashMap::new(),
         }
     }
 
-    commits
-}
-
-/// Aggregates a list of commits into author-specific statistics.
-/// 
-/// This includes:
-/// - Total counts (commits, insertions, deletions)
-/// - Weekly activity trends
-/// - Daily activity counts for heatmaps
-pub fn compute_author_stats(commits: &[Commit]) -> Vec<AuthorStats> {
-    let mut stats_map: HashMap<String, AuthorStats> = HashMap::new();
-    let mut activity_map: HashMap<String, HashMap<String, WeeklyActivity>> = HashMap::new();
-    let mut daily_map: HashMap<String, HashMap<String, u32>> = HashMap::new();
-
-    for commit in commits {
+    pub fn add_commit(&mut self, commit: &Commit) {
         let key = &commit.author_email;
-        let stat = stats_map.entry(key.clone()).or_insert_with(|| AuthorStats {
+        let stat = self.stats_map.entry(key.clone()).or_insert_with(|| AuthorStats {
             name: commit.author_name.clone(),
             email: commit.author_email.clone(),
-            commits: 0,
-            insertions: 0,
-            deletions: 0,
-            activity: Vec::new(),
-            daily_activity: Vec::new(),
+            ..Default::default()
         });
 
         stat.commits += 1;
         stat.insertions += commit.insertions;
         stat.deletions += commit.deletions;
 
-        // Parse date once for both maps
         if let Ok(ts) = commit.date.parse::<i64>() {
             if let Some(dt) = Utc.timestamp_opt(ts, 0).single() {
-                // Daily activity (Heatmap)
+                // Daily
                 let date_str = dt.format("%Y-%m-%d").to_string();
-                let author_daily = daily_map.entry(key.clone()).or_insert_with(HashMap::new);
+                let author_daily = self.daily_map.entry(key.clone()).or_insert_with(HashMap::new);
                 *author_daily.entry(date_str).or_insert(0) += 1;
 
-                // Weekly activity (Timeline)
+                // Weekly
                 let week_id = format!("{}-{}", dt.year(), dt.iso_week().week());
-                let author_activity = activity_map.entry(key.clone()).or_insert_with(HashMap::new);
+                let author_activity = self.activity_map.entry(key.clone()).or_insert_with(HashMap::new);
                 let week_stat = author_activity.entry(week_id.clone()).or_insert_with(|| WeeklyActivity {
-                    week_id,
-                    commits: 0,
-                    insertions: 0,
-                    deletions: 0,
-                    top_files: Vec::new(),
+                    week_id, ..Default::default()
                 });
 
                 week_stat.commits += 1;
                 week_stat.insertions += commit.insertions;
                 week_stat.deletions += commit.deletions;
                 
-                // Aggregated weekly file impact
                 for change in &commit.changes {
                     if let Some(existing) = week_stat.top_files.iter_mut().find(|f| f.path == change.path) {
                         existing.insertions += change.insertions;
@@ -251,80 +245,88 @@ pub fn compute_author_stats(commits: &[Commit]) -> Vec<AuthorStats> {
                     } else {
                         week_stat.top_files.push(change.clone());
                     }
+                    
+                    // Prune top files per week to keep memory constant
+                    if week_stat.top_files.len() > 30 {
+                         week_stat.top_files.sort_by(|a, b| (b.insertions + b.deletions).cmp(&(a.insertions + a.deletions)));
+                         week_stat.top_files.truncate(15);
+                    }
+
+                    // Global File Stats
+                    let fstat = self.file_stats_map.entry(change.path.clone()).or_insert_with(|| FileStats {
+                        path: change.path.clone(), ..Default::default()
+                    });
+                    fstat.commits += 1;
+                    fstat.insertions += change.insertions;
+                    fstat.deletions += change.deletions;
+                    if commit.date > fstat.last_updated {
+                        fstat.last_updated = commit.date.clone();
+                    }
                 }
             }
         }
     }
 
-    let mut result: Vec<AuthorStats> = stats_map.into_values().collect();
-    for stat in &mut result {
-        if let Some(author_activity) = activity_map.remove(&stat.email) {
-            let mut activities: Vec<WeeklyActivity> = author_activity.into_values().collect();
-            activities.sort_by(|a, b| a.week_id.cmp(&b.week_id));
-            
-            // Refine weekly top files
-            for week in &mut activities {
-                week.top_files.sort_by(|a, b| (b.insertions + b.deletions).cmp(&(a.insertions + a.deletions)));
-                week.top_files.truncate(15);
+    pub fn finalize(mut self) -> (Vec<AuthorStats>, Vec<FileStats>) {
+        let mut authors: Vec<AuthorStats> = self.stats_map.into_values().collect();
+        for stat in &mut authors {
+            if let Some(author_activity) = self.activity_map.remove(&stat.email) {
+                let mut activities: Vec<WeeklyActivity> = author_activity.into_values().collect();
+                activities.sort_by(|a, b| a.week_id.cmp(&b.week_id));
+                for week in &mut activities {
+                    week.top_files.sort_by(|a, b| (b.insertions + b.deletions).cmp(&(a.insertions + a.deletions)));
+                    week.top_files.truncate(15);
+                }
+                stat.activity = activities;
             }
-            stat.activity = activities;
-        }
-        
-        if let Some(author_daily) = daily_map.remove(&stat.email) {
-            let mut days: Vec<DayActivity> = author_daily.into_iter()
-                .map(|(date, commits)| DayActivity { date, commits })
-                .collect();
-            days.sort_by(|a, b| a.date.cmp(&b.date));
-            stat.daily_activity = days;
-        }
-    }
-    
-    result.sort_by(|a, b| b.commits.cmp(&a.commits));
-    result
-}
-
-/// Aggregates commit data into file-specific statistics for hotspot analysis.
-pub fn compute_file_stats(commits: &[Commit]) -> Vec<FileStats> {
-    let mut stats_map: HashMap<String, FileStats> = HashMap::new();
-
-    for commit in commits {
-        for change in &commit.changes {
-            let stat = stats_map.entry(change.path.clone()).or_insert_with(|| FileStats {
-                path: change.path.clone(),
-                commits: 0,
-                insertions: 0,
-                deletions: 0,
-                total_lines: 0,
-                loc: 0,
-                last_updated: String::new(),
-            });
-
-            stat.commits += 1;
-            stat.insertions += change.insertions;
-            stat.deletions += change.deletions;
-            
-            // Track the most recent commit date for this file
-            if commit.date > stat.last_updated {
-                stat.last_updated = commit.date.clone();
+            if let Some(author_daily) = self.daily_map.remove(&stat.email) {
+                let mut days: Vec<DayActivity> = author_daily.into_iter()
+                    .map(|(date, commits)| DayActivity { date, commits }).collect();
+                days.sort_by(|a, b| a.date.cmp(&b.date));
+                stat.daily_activity = days;
             }
         }
-    }
+        authors.sort_by(|a, b| b.commits.cmp(&a.commits));
 
-    let mut result: Vec<FileStats> = stats_map.into_values().collect();
-    
-    // Convert Unix timestamps to human-readable strings
-    for stat in &mut result {
-        if !stat.last_updated.is_empty() {
+        let mut files: Vec<FileStats> = self.file_stats_map.into_values().collect();
+        for stat in &mut files {
             if let Ok(ts) = stat.last_updated.parse::<i64>() {
                 if let Some(dt) = Utc.timestamp_opt(ts, 0).single() {
                     stat.last_updated = dt.format("%b %d, %Y").to_string();
                 }
             }
         }
-    }
+        files.sort_by(|a, b| b.commits.cmp(&a.commits));
 
-    result.sort_by(|a, b| b.commits.cmp(&a.commits));
-    result
+        (authors, files)
+    }
+}
+
+/// Legacy support for batch processing (internalizes the stream).
+pub fn parse_commits(raw_output: &str, config: &Config, filter: &Filter) -> Vec<Commit> {
+    let mut parser = CommitParser::new(config, filter);
+    let mut commits = Vec::new();
+    for line in raw_output.lines() {
+        if let Some(commit) = parser.parse_line(line) {
+            commits.push(commit);
+        }
+    }
+    if let Some(commit) = parser.finalize() {
+        commits.push(commit);
+    }
+    commits
+}
+
+pub fn compute_author_stats(commits: &[Commit]) -> Vec<AuthorStats> {
+    let mut agg = IncrementalAggregator::new();
+    for c in commits { agg.add_commit(c); }
+    agg.finalize().0
+}
+
+pub fn compute_file_stats(commits: &[Commit]) -> Vec<FileStats> {
+    let mut agg = IncrementalAggregator::new();
+    for c in commits { agg.add_commit(c); }
+    agg.finalize().1
 }
 
 #[cfg(test)]
@@ -348,8 +350,9 @@ mod tests {
     }
 
     #[test]
-    fn test_compute_author_stats() {
-        let commits = vec![Commit {
+    fn test_incremental_aggregator() {
+        let mut agg = IncrementalAggregator::new();
+        let commit = Commit {
             hash: "h1".into(),
             author_name: "User".into(),
             author_email: "user@test.com".into(),
@@ -358,12 +361,38 @@ mod tests {
             insertions: 10,
             deletions: 2,
             changes: vec![FileChange { path: "a.rs".into(), insertions: 10, deletions: 2 }],
-        }];
-
-        let stats = compute_author_stats(&commits);
+        };
+        agg.add_commit(&commit);
+        let (stats, _) = agg.finalize();
+        
         assert_eq!(stats.len(), 1);
         assert_eq!(stats[0].commits, 1);
         assert_eq!(stats[0].impact(), 8);
         assert!(!stats[0].daily_activity.is_empty());
+    }
+
+    #[test]
+    fn test_parser_streaming_logic() {
+        let config = Config::default();
+        let filter = Filter::new(&[]).unwrap();
+        let mut parser = CommitParser::new(&config, &filter);
+        
+        let line1 = "commit|h1|A|e|100|S";
+        let line2 = "5\t0\tf1.rs";
+        let line3 = "commit|h2|B|e2|200|S2";
+        let line4 = "1\t0\tf2.rs";
+        
+        assert!(parser.parse_line(line1).is_none());
+        assert!(parser.parse_line(line2).is_none());
+        
+        // When the second commit starts, the first one should be returned
+        let c1 = parser.parse_line(line3).expect("Should return first commit");
+        assert_eq!(c1.hash, "h1");
+        assert_eq!(c1.insertions, 5);
+        
+        assert!(parser.parse_line(line4).is_none());
+        let c2 = parser.finalize().expect("Should return second commit");
+        assert_eq!(c2.hash, "h2");
+        assert_eq!(c2.insertions, 1);
     }
 }
