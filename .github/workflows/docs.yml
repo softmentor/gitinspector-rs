@@ -38,7 +38,7 @@ jobs:
 
       - name: Install Plugin Dependencies
         run: |
-          uv pip install --system pyyaml jsonschema
+          uv pip install --system --break-system-packages pyyaml jsonschema
 
       - name: Install mystmd
         run: uv tool install mystmd
