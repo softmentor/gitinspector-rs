@@ -1,4 +1,4 @@
-# Gitinspector-rs
+# GitInspector-rs
 
 **A high-performance git repository analytics engine written in Rust.**
 
@@ -6,7 +6,11 @@
 
 ![Report Preview](./images/hero_report.png)
 
-## Key Features
+{button}`Explore the Usage Guide </usage>`
+
+---
+
+## 🚀 Key Capabilities
 
 ### 🏥 Repository Health Diagnostics
 Automatically audit your repository for maintenance debt.
@@ -31,7 +35,3 @@ Understand author responsibility across the entire codebase.
 - **Timeline Visualization**: Track activity trends over weeks and months.
 
 ![Author Statistics](./images/author_stats_crop.png)
-
-## Getting Started
-
-Check out the [Usage](./usage.md) guide to start analyzing your first repository.

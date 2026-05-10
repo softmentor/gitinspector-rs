@@ -5,14 +5,21 @@ project:
   description: A statistical analysis tool for git repositories written in Rust.
 site:
   template: book-theme
+  options:
+    logo: images/logo.png
+    logo_text: "GitInspector Docs"
   nav:
-    - title: Introduction
-      file: index.md
-    - title: Architecture
-      file: architecture.md
-    - title: Usage
-      file: usage.md
-    - title: Contributing
-      file: contributing.md
-    - title: Roadmap
-      file: roadmap.md
+    - title: User Guides
+      children:
+        - title: Introduction
+          file: index.md
+        - title: Usage
+          file: usage.md
+    - title: Developer Guides
+      children:
+        - title: Architecture
+          file: architecture.md
+        - title: Contributing
+          file: contributing.md
+        - title: Roadmap
+          file: roadmap.md
