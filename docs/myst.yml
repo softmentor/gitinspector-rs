@@ -3,22 +3,14 @@ project:
   id: gitinspector-rs
   title: gitinspector-rs
   description: A statistical analysis tool for git repositories written in Rust.
-site:
-  template: book-theme
-  options:
-    logo: images/logo.png
-    logo_text: "GitInspector Docs"
-    style: site-assets/css/gitinspector.css
-  nav:
+  toc:
     - title: USER GUIDES
-      url: /index
       children:
         - title: Getting Started
           file: index.md
         - title: Command Reference
           file: usage.md
     - title: DEVELOPER GUIDES
-      url: /architecture
       children:
         - title: Architecture
           file: architecture.md
@@ -26,3 +18,10 @@ site:
           file: contributing.md
         - title: Roadmap
           file: roadmap.md
+
+site:
+  template: book-theme
+  options:
+    logo: images/logo.png
+    logo_text: "GitInspector Docs"
+    style: site-assets/css/gitinspector.css
