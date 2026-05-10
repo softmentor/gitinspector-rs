@@ -42,7 +42,7 @@ jobs:
       - name: Build with MyST
         run: |
           uv venv
-          uv pip install pyyaml jsonschema
+          uv pip install "git+https://github.com/katlas-space/katlas-myst-plugin.git#egg=katlas-myst-plugin&subdirectory=python/katlas-myst-plugin"
           source .venv/bin/activate
           cd docs
           BASE_URL="/gitinspector-rs" myst build --html
